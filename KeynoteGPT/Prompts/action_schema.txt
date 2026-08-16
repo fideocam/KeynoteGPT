@@ -1,0 +1,50 @@
+Allowed actions only (unknown ops are ignored). Respond with a single JSON object:
+
+{"actions":[ ... ]}
+
+Indexes are 0-based unless noted. Colors are [r,g,b] with 0–255 integers.
+
+1) note — non-mutating message shown in the chat after apply
+   {"op":"note","text":"Assumed widescreen theme."}
+
+2) add_slide — append or insert a slide
+   {"op":"add_slide","position":"end"|"beginning"|"after_current"|number,"layout":"Title & Subtitle"|"Title - Center"|"Title & Bullets"|"Blank"|string}
+   Optional "layout" uses the theme master name when available.
+
+3) delete_slide
+   {"op":"delete_slide","slide_index":0}
+
+4) duplicate_slide
+   {"op":"duplicate_slide","slide_index":0}
+
+5) set_title — default title item on a slide
+   {"op":"set_title","slide_index":0,"text":"Headline"}
+
+6) set_body — default body item on a slide
+   {"op":"set_body","slide_index":0,"text":"Bullet one\nBullet two"}
+
+7) set_presenter_notes
+   {"op":"set_presenter_notes","slide_index":0,"text":"Say this…"}
+
+8) add_text_box
+   {"op":"add_text_box","slide_index":0,"text":"Callout","x":100,"y":200,"width":400,"height":80}
+
+9) set_text_item — edit an existing text item by index within the slide's text items
+   {"op":"set_text_item","slide_index":0,"item_index":0,"text":"Updated"}
+
+10) add_shape
+    {"op":"add_shape","slide_index":0,"shape":"rectangle"|"oval"|"rounded_rectangle","x":80,"y":80,"width":200,"height":120}
+
+11) set_slide_skipped
+    {"op":"set_slide_skipped","slide_index":0,"skipped":true}
+
+12) select_slide
+    {"op":"select_slide","slide_index":0}
+
+13) create_presentation — new document (uses default theme if theme omitted)
+    {"op":"create_presentation","theme":"Gradient","width":1920,"height":1080}
+
+Example CHANGES response:
+{"actions":[{"op":"add_slide","position":"end","layout":"Title & Bullets"},{"op":"set_title","slide_index":-1,"text":"Roadmap"},{"op":"set_body","slide_index":-1,"text":"Q1 — Discovery\nQ2 — Build\nQ3 — Launch"}]}
+
+Use slide_index -1 to mean the last slide after prior actions in the same response.
