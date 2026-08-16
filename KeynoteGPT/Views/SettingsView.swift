@@ -10,7 +10,10 @@ struct SettingsView: View {
 
     @State private var models: [OllamaModelInfo] = []
     @State private var modelsError: String?
+    @State private var keynoteTestMessage: String?
+    @State private var keynoteTestSucceeded = false
     @State private var isLoadingModels = false
+    @State private var isTestingKeynote = false
 
     var body: some View {
         NavigationStack {
@@ -51,14 +54,15 @@ struct SettingsView: View {
                     Text("KeynoteGPT controls the frontmost Keynote document through JavaScript for Automation. Grant Automation access when macOS asks (KeynoteGPT → Keynote).")
                         .font(.caption)
                         .foregroundStyle(.secondary)
-                    Button("Test Keynote digest") {
-                        Task {
-                            let digest = await agent.refreshDigestPreview()
-                            modelsError = digest.hasPrefix("Error:") ? digest : nil
-                            if modelsError == nil {
-                                modelsError = "Digest OK (\(digest.count) chars). Open Digest from the main window to inspect."
-                            }
-                        }
+                    Button(isTestingKeynote ? "Testing…" : "Test Keynote digest") {
+                        Task { await testKeynoteDigest() }
+                    }
+                    .disabled(isTestingKeynote)
+                    if let keynoteTestMessage {
+                        Text(keynoteTestMessage)
+                            .font(.caption)
+                            .foregroundColor(keynoteTestSucceeded ? Color.secondary : Color.red)
+                            .textSelection(.enabled)
                     }
                 }
             }
@@ -75,6 +79,24 @@ struct SettingsView: View {
             }
         }
         .task { await refreshModels() }
+    }
+
+    private func testKeynoteDigest() async {
+        isTestingKeynote = true
+        defer { isTestingKeynote = false }
+        let digest = await agent.refreshDigestPreview()
+        if digest.hasPrefix("Error:") {
+            keynoteTestSucceeded = false
+            keynoteTestMessage = digest
+        } else if let data = digest.data(using: .utf8),
+                  let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let error = obj["error"] as? String {
+            keynoteTestSucceeded = false
+            keynoteTestMessage = "Keynote: \(error)"
+        } else {
+            keynoteTestSucceeded = true
+            keynoteTestMessage = "Digest OK (\(digest.count) characters). Use Digest in the main window to inspect the full snapshot."
+        }
     }
 
     private func refreshModels() async {

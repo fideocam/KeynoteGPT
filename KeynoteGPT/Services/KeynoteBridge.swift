@@ -609,35 +609,32 @@ actor KeynoteBridge {
 
     @discardableResult
     private func runAppleScript(_ source: String) throws -> String {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-        process.arguments = ["-e", source]
-        let stdout = Pipe()
-        let stderr = Pipe()
-        process.standardOutput = stdout
-        process.standardError = stderr
-        do {
-            try process.run()
-        } catch {
-            throw KeynoteBridgeError.scriptFailed(error.localizedDescription)
-        }
-        process.waitUntilExit()
-        let outData = stdout.fileHandleForReading.readDataToEndOfFile()
-        let errData = stderr.fileHandleForReading.readDataToEndOfFile()
-        let out = String(data: outData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let err = String(data: errData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        if process.terminationStatus != 0 {
-            let message = err.isEmpty ? (out.isEmpty ? "AppleScript failed with status \(process.terminationStatus)" : out) : err
-            throw KeynoteBridgeError.scriptFailed(message)
-        }
-        return out
+        try runOSA(source: source, language: nil)
     }
 
     @discardableResult
     private func runJXA(_ source: String) throws -> String {
+        try runOSA(source: source, language: "JavaScript")
+    }
+
+    /// Runs osascript via a temp file (avoids `-e` length/escaping issues) and maps auth failures clearly.
+    private func runOSA(source: String, language: String?) throws -> String {
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("keynotegpt-\(UUID().uuidString).\(language == nil ? "applescript" : "js")")
+        defer { try? FileManager.default.removeItem(at: tempURL) }
+        do {
+            try source.write(to: tempURL, atomically: true, encoding: .utf8)
+        } catch {
+            throw KeynoteBridgeError.scriptFailed("Could not write temporary script: \(error.localizedDescription)")
+        }
+
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/osascript")
-        process.arguments = ["-l", "JavaScript", "-e", source]
+        if let language {
+            process.arguments = ["-l", language, tempURL.path]
+        } else {
+            process.arguments = [tempURL.path]
+        }
         let stdout = Pipe()
         let stderr = Pipe()
         process.standardOutput = stdout
@@ -653,9 +650,27 @@ actor KeynoteBridge {
         let out = String(data: outData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let err = String(data: errData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         if process.terminationStatus != 0 {
-            let message = err.isEmpty ? (out.isEmpty ? "JXA failed with status \(process.terminationStatus)" : out) : err
-            throw KeynoteBridgeError.scriptFailed(message)
+            let raw = err.isEmpty ? (out.isEmpty ? "osascript failed with status \(process.terminationStatus)" : out) : err
+            throw KeynoteBridgeError.scriptFailed(Self.friendlyAutomationMessage(from: raw))
         }
         return out
+    }
+
+    private static func friendlyAutomationMessage(from raw: String) -> String {
+        let lowered = raw.lowercased()
+        if lowered.contains("not authorised")
+            || lowered.contains("not authorized")
+            || lowered.contains("(-1743)")
+            || (lowered.contains("execution error") && lowered.contains("apple event")) {
+            return """
+            KeynoteGPT is not allowed to control Keynote. Open System Settings → Privacy & Security → Automation, enable Keynote for KeynoteGPT, then quit and reopen KeynoteGPT. Also keep a Keynote document open. (\(raw))
+            """
+        }
+        if lowered.contains("execution error") {
+            return """
+            Keynote scripting failed. Keep Keynote open with a document, and allow Automation (System Settings → Privacy & Security → Automation → KeynoteGPT → Keynote). Details: \(raw)
+            """
+        }
+        return raw
     }
 }
