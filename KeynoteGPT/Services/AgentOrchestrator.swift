@@ -65,34 +65,49 @@ final class AgentOrchestrator: ObservableObject {
                 )
                 try Task.checkCancellation()
 
-                let actions = ActionParser.extractActions(from: reply)
-                if actions.isEmpty {
-                    messages.append(ChatMessage(role: .assistant, content: reply.trimmingCharacters(in: .whitespacesAndNewlines)))
+                let (kept, rejected) = ActionParser.extractActionsDetailed(from: reply)
+                if kept.isEmpty {
+                    var content = reply.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !rejected.isEmpty {
+                        content = (content.isEmpty ? "" : content + "\n\n")
+                            + "Blocked \(rejected.count) unsafe action(s):\n"
+                            + rejected.map { "• \($0)" }.joined(separator: "\n")
+                    }
+                    messages.append(ChatMessage(role: .assistant, content: content))
                     statusText = "Ready"
                     return
                 }
 
-                statusText = "Applying \(actions.count) action(s)…"
+                statusText = "Applying \(kept.count) action(s)…"
                 var lastSlide: Int?
                 var lines: [String] = []
                 var notes: [String] = []
-                for action in actions {
+                for action in kept {
                     try Task.checkCancellation()
-                    let (result, updatedHint) = try await keynote.apply(action, lastSlideHint: lastSlide)
-                    lastSlide = updatedHint
-                    if action.op == "note", let text = action.text, !text.isEmpty {
-                        notes.append(text)
+                    do {
+                        let (result, updatedHint) = try await keynote.apply(action, lastSlideHint: lastSlide)
+                        lastSlide = updatedHint
+                        if action.op == "note", let text = action.text, !text.isEmpty {
+                            notes.append(text)
+                        }
+                        let mark = result.success ? "✓" : "✗"
+                        lines.append("\(mark) \(result.op): \(result.detail)")
+                    } catch {
+                        // Keep applying remaining actions; a failed set_title must not strand a blank slide mid-batch.
+                        lines.append("✗ \(action.op): \(error.localizedDescription)")
                     }
-                    let mark = result.success ? "✓" : "✗"
-                    lines.append("\(mark) \(result.op): \(result.detail)")
+                }
+                for item in rejected {
+                    lines.append("✗ \(item)")
                 }
 
-                var content = "Applied \(actions.count) action(s):\n" + lines.joined(separator: "\n")
+                var content = "Applied \(kept.count) action(s):\n" + lines.joined(separator: "\n")
                 if !notes.isEmpty {
                     content += "\n\n" + notes.joined(separator: "\n")
                 }
-                // Keep raw model output available but secondary.
-                if reply.count < 4000, reply.contains("{") {
+                if settings.showModelJSON,
+                   reply.count < 4000,
+                   reply.contains("{") {
                     content += "\n\n—\nModel JSON:\n" + reply.trimmingCharacters(in: .whitespacesAndNewlines)
                 }
                 messages.append(ChatMessage(role: .assistant, content: content))

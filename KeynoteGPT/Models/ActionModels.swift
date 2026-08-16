@@ -7,6 +7,8 @@ struct ActionBatch: Decodable, Sendable {
 struct KeynoteAction: Decodable, Sendable {
     let op: String
     let text: String?
+    let title: String?
+    let body: String?
     let position: ActionPosition?
     let layout: String?
     let slideIndex: Int?
@@ -18,9 +20,11 @@ struct KeynoteAction: Decodable, Sendable {
     let x: Double?
     let y: Double?
     let shape: String?
+    let labels: [String]?
+    let columns: Int?
 
     enum CodingKeys: String, CodingKey {
-        case op, text, position, layout, skipped, theme, width, height, x, y, shape
+        case op, text, title, body, position, layout, skipped, theme, width, height, x, y, shape, labels, columns
         case slideIndex = "slide_index"
         case itemIndex = "item_index"
     }

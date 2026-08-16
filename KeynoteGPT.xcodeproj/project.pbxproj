@@ -21,6 +21,16 @@
 		A1000000000000000000000C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* Assets.xcassets */; };
 		A1000000000000000000000D /* system_prompt_rules.txt in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* system_prompt_rules.txt */; };
 		A1000000000000000000000E /* action_schema.txt in Resources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* action_schema.txt */; };
+		A10000000000000000000010 /* JSStringEscaper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* JSStringEscaper.swift */; };
+		A10000000000000000000011 /* ActionAllowlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* ActionAllowlist.swift */; };
+		A10000000000000000000012 /* OllamaEndpointValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* OllamaEndpointValidator.swift */; };
+		A10000000000000000000013 /* BoxLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000013 /* BoxLayout.swift */; };
+		A10000000000000000000025 /* BoxLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000025 /* BoxLayoutTests.swift */; };
+		A10000000000000000000020 /* JSStringEscaperSecurityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000020 /* JSStringEscaperSecurityTests.swift */; };
+		A10000000000000000000021 /* ActionAllowlistSecurityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000021 /* ActionAllowlistSecurityTests.swift */; };
+		A10000000000000000000022 /* ActionParserSecurityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000022 /* ActionParserSecurityTests.swift */; };
+		A10000000000000000000023 /* OllamaEndpointValidatorSecurityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000023 /* OllamaEndpointValidatorSecurityTests.swift */; };
+		A10000000000000000000024 /* KeynoteGPT.app in Frameworks */ = {isa = PBXBuildFile; fileRef = A30000000000000000000001 /* KeynoteGPT.app */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +50,16 @@
 		A2000000000000000000000E /* action_schema.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = action_schema.txt; sourceTree = "<group>"; };
 		A2000000000000000000000F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A30000000000000000000001 /* KeynoteGPT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KeynoteGPT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000010 /* JSStringEscaper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSStringEscaper.swift; sourceTree = "<group>"; };
+		A20000000000000000000011 /* ActionAllowlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionAllowlist.swift; sourceTree = "<group>"; };
+		A20000000000000000000012 /* OllamaEndpointValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaEndpointValidator.swift; sourceTree = "<group>"; };
+		A20000000000000000000013 /* BoxLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxLayout.swift; sourceTree = "<group>"; };
+		A20000000000000000000025 /* BoxLayoutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxLayoutTests.swift; sourceTree = "<group>"; };
+		A20000000000000000000020 /* JSStringEscaperSecurityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSStringEscaperSecurityTests.swift; sourceTree = "<group>"; };
+		A20000000000000000000021 /* ActionAllowlistSecurityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionAllowlistSecurityTests.swift; sourceTree = "<group>"; };
+		A20000000000000000000022 /* ActionParserSecurityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionParserSecurityTests.swift; sourceTree = "<group>"; };
+		A20000000000000000000023 /* OllamaEndpointValidatorSecurityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaEndpointValidatorSecurityTests.swift; sourceTree = "<group>"; };
+		A30000000000000000000002 /* KeynoteGPTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeynoteGPTTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +70,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A40000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000024 /* KeynoteGPT.app in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -57,6 +85,7 @@
 			isa = PBXGroup;
 			children = (
 				A50000000000000000000002 /* KeynoteGPT */,
+				A50000000000000000000009 /* KeynoteGPTTests */,
 				A50000000000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,6 +96,7 @@
 				A20000000000000000000001 /* KeynoteGPTApp.swift */,
 				A50000000000000000000004 /* Models */,
 				A50000000000000000000005 /* Services */,
+				A50000000000000000000008 /* Security */,
 				A50000000000000000000006 /* Views */,
 				A50000000000000000000007 /* Prompts */,
 				A2000000000000000000000C /* Assets.xcassets */,
@@ -79,8 +109,31 @@
 			isa = PBXGroup;
 			children = (
 				A30000000000000000000001 /* KeynoteGPT.app */,
+				A30000000000000000000002 /* KeynoteGPTTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000008 /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000010 /* JSStringEscaper.swift */,
+				A20000000000000000000011 /* ActionAllowlist.swift */,
+				A20000000000000000000012 /* OllamaEndpointValidator.swift */,
+			);
+			path = Security;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000009 /* KeynoteGPTTests */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000020 /* JSStringEscaperSecurityTests.swift */,
+				A20000000000000000000021 /* ActionAllowlistSecurityTests.swift */,
+				A20000000000000000000022 /* ActionParserSecurityTests.swift */,
+				A20000000000000000000023 /* OllamaEndpointValidatorSecurityTests.swift */,
+				A20000000000000000000025 /* BoxLayoutTests.swift */,
+			);
+			path = KeynoteGPTTests;
 			sourceTree = "<group>";
 		};
 		A50000000000000000000004 /* Models */ = {
@@ -101,6 +154,7 @@
 				A20000000000000000000009 /* ActionParser.swift */,
 				A2000000000000000000000A /* PromptLoader.swift */,
 				A2000000000000000000000B /* AgentOrchestrator.swift */,
+				A20000000000000000000013 /* BoxLayout.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -143,7 +197,43 @@
 			productReference = A30000000000000000000001 /* KeynoteGPT.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A60000000000000000000002 /* KeynoteGPTTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A80000000000000000000008 /* Build configuration list for PBXNativeTarget "KeynoteGPTTests" */;
+			buildPhases = (
+				A70000000000000000000003 /* Sources */,
+				A40000000000000000000002 /* Frameworks */,
+				A70000000000000000000004 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A61000000000000000000001 /* PBXTargetDependency */,
+			);
+			name = KeynoteGPTTests;
+			productName = KeynoteGPTTests;
+			productReference = A30000000000000000000002 /* KeynoteGPTTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
+
+/* Begin PBXContainerItemProxy section */
+		A61000000000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A90000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A60000000000000000000001;
+			remoteInfo = KeynoteGPT;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		A61000000000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A60000000000000000000001 /* KeynoteGPT */;
+			targetProxy = A61000000000000000000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXProject section */
 		A90000000000000000000001 /* Project object */ = {
@@ -155,6 +245,10 @@
 				TargetAttributes = {
 					A60000000000000000000001 = {
 						CreatedOnToolsVersion = 26.0;
+					};
+					A60000000000000000000002 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = A60000000000000000000001;
 					};
 				};
 			};
@@ -172,6 +266,7 @@
 			projectRoot = "";
 			targets = (
 				A60000000000000000000001 /* KeynoteGPT */,
+				A60000000000000000000002 /* KeynoteGPTTests */,
 			);
 		};
 /* End PBXProject section */
@@ -184,6 +279,13 @@
 				A1000000000000000000000C /* Assets.xcassets in Resources */,
 				A1000000000000000000000D /* system_prompt_rules.txt in Resources */,
 				A1000000000000000000000E /* action_schema.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A70000000000000000000004 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,6 +307,22 @@
 				A10000000000000000000009 /* ActionParser.swift in Sources */,
 				A1000000000000000000000A /* PromptLoader.swift in Sources */,
 				A1000000000000000000000B /* AgentOrchestrator.swift in Sources */,
+				A10000000000000000000010 /* JSStringEscaper.swift in Sources */,
+				A10000000000000000000011 /* ActionAllowlist.swift in Sources */,
+				A10000000000000000000012 /* OllamaEndpointValidator.swift in Sources */,
+				A10000000000000000000013 /* BoxLayout.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A70000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000020 /* JSStringEscaperSecurityTests.swift in Sources */,
+				A10000000000000000000021 /* ActionAllowlistSecurityTests.swift in Sources */,
+				A10000000000000000000022 /* ActionParserSecurityTests.swift in Sources */,
+				A10000000000000000000023 /* OllamaEndpointValidatorSecurityTests.swift in Sources */,
+				A10000000000000000000025 /* BoxLayoutTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -259,6 +377,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				ENABLE_TESTABILITY = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.raino.KeynoteGPT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -291,6 +410,40 @@
 			};
 			name = Release;
 		};
+		A80000000000000000000009 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.raino.KeynoteGPTTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeynoteGPT.app/Contents/MacOS/KeynoteGPT";
+			};
+			name = Debug;
+		};
+		A8000000000000000000000A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.raino.KeynoteGPTTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KeynoteGPT.app/Contents/MacOS/KeynoteGPT";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -308,6 +461,15 @@
 			buildConfigurations = (
 				A80000000000000000000006 /* Debug */,
 				A80000000000000000000007 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A80000000000000000000008 /* Build configuration list for PBXNativeTarget "KeynoteGPTTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A80000000000000000000009 /* Debug */,
+				A8000000000000000000000A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -49,6 +49,19 @@ On first Keynote control, macOS will ask for **Automation** permission (KeynoteG
 
 Analysis replies stay as chat text. Change requests must return JSON actions from the allowlist in `Prompts/action_schema.txt`.
 
+## Security tests
+
+```bash
+xcodebuild test -scheme KeynoteGPT -configuration Debug -derivedDataPath build
+```
+
+Coverage focuses on LLM/tool abuse surfaces:
+
+- JXA string injection (`JSStringEscaperSecurityTests` — round-trips through real `osascript`)
+- Action allowlisting / unknown ops (`ActionAllowlistSecurityTests`)
+- Parser + sanitizer (`ActionParserSecurityTests`)
+- Ollama URL SSRF/scheme restrictions (`OllamaEndpointValidatorSecurityTests`)
+
 ## Notes
 
 - Operates on the **frontmost** Keynote document.

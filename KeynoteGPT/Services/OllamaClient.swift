@@ -29,12 +29,17 @@ struct OllamaModelInfo: Identifiable, Hashable, Sendable {
 }
 
 actor OllamaClient {
-    func normalizeBase(_ url: String) -> String {
-        url.trimmingCharacters(in: .whitespacesAndNewlines).trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+    func normalizeBase(_ url: String) throws -> String {
+        try OllamaEndpointValidator.validatedBaseURL(url)
     }
 
     func listModels(baseURL: String) async throws -> [OllamaModelInfo] {
-        let base = normalizeBase(baseURL)
+        let base: String
+        do {
+            base = try normalizeBase(baseURL)
+        } catch {
+            throw OllamaClientError.unreachable(baseURL, error.localizedDescription)
+        }
         guard let url = URL(string: "\(base)/api/tags") else {
             throw OllamaClientError.unreachable(base, "invalid URL")
         }
@@ -64,7 +69,12 @@ actor OllamaClient {
         numCtx: Int = 0,
         timeout: TimeInterval = 600
     ) async throws -> String {
-        let base = normalizeBase(baseURL)
+        let base: String
+        do {
+            base = try normalizeBase(baseURL)
+        } catch {
+            throw OllamaClientError.unreachable(baseURL, error.localizedDescription)
+        }
         guard let url = URL(string: "\(base)/api/chat") else {
             throw OllamaClientError.unreachable(base, "invalid URL")
         }

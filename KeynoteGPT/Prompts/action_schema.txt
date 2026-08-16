@@ -2,49 +2,67 @@ Allowed actions only (unknown ops are ignored). Respond with a single JSON objec
 
 {"actions":[ ... ]}
 
-Indexes are 0-based unless noted. Colors are [r,g,b] with 0–255 integers.
+Indexes are 0-based unless noted.
 
 1) note — non-mutating message shown in the chat after apply
    {"op":"note","text":"Assumed widescreen theme."}
 
-2) add_slide — append or insert a slide
-   {"op":"add_slide","position":"end"|"beginning"|"after_current"|number,"layout":"Title & Subtitle"|"Title - Center"|"Title & Bullets"|"Blank"|string}
-   Optional "layout" uses the theme master name when available.
+2) add_content_slide — PREFERRED for new slides with title + bullet text
+   {"op":"add_content_slide","layout":"Agenda"|"Title & Bullets"|"Title Only"|string,"title":"Meeting Agenda","body":"1. Welcome\n2. Updates","position":"end"}
 
-3) delete_slide
+3) add_labeled_boxes — PREFERRED when the user wants separate boxes/cards/tiles per item
+   {"op":"add_labeled_boxes","title":"Seven Dwarfs","shape":"rounded_rectangle","labels":["Doc","Grumpy","Happy","Sleepy","Bashful","Sneezy","Dopey"],"columns":4}
+   Creates a new slide (Title Only) when "title" is set, then places one labeled shape per label in a grid.
+   To add boxes to an existing slide: omit title and set "slide_index".
+   shape: "rounded_rectangle" (default) | "rectangle" | "oval"
+   Optional "columns" (1–8). If omitted, columns are chosen automatically.
+
+4) add_labeled_shape — one rounded/rect/oval shape with text inside
+   {"op":"add_labeled_shape","slide_index":-1,"shape":"rounded_rectangle","text":"Doc","x":100,"y":240,"width":240,"height":120}
+
+5) add_slide — blank/layout slide (MUST follow with content actions if needed)
+   {"op":"add_slide","position":"end"|"beginning"|number,"layout":"Title & Bullets"|"Agenda"|"Blank"|string}
+
+6) delete_slide
    {"op":"delete_slide","slide_index":0}
 
-4) duplicate_slide
+7) duplicate_slide
    {"op":"duplicate_slide","slide_index":0}
 
-5) set_title — default title item on a slide
-   {"op":"set_title","slide_index":0,"text":"Headline"}
+8) set_title
+   {"op":"set_title","slide_index":-1,"text":"Headline"}
 
-6) set_body — default body item on a slide
-   {"op":"set_body","slide_index":0,"text":"Bullet one\nBullet two"}
+9) set_body — bullet/paragraph text only (NOT a substitute for boxes/cards)
+   {"op":"set_body","slide_index":-1,"text":"Bullet one\nBullet two"}
 
-7) set_presenter_notes
-   {"op":"set_presenter_notes","slide_index":0,"text":"Say this…"}
+10) set_presenter_notes
+    {"op":"set_presenter_notes","slide_index":0,"text":"Say this…"}
 
-8) add_text_box
-   {"op":"add_text_box","slide_index":0,"text":"Callout","x":100,"y":200,"width":400,"height":80}
+11) add_text_box
+    {"op":"add_text_box","slide_index":0,"text":"Callout","x":100,"y":200,"width":400,"height":80}
 
-9) set_text_item — edit an existing text item by index within the slide's text items
-   {"op":"set_text_item","slide_index":0,"item_index":0,"text":"Updated"}
+12) set_text_item
+    {"op":"set_text_item","slide_index":0,"item_index":0,"text":"Updated"}
 
-10) add_shape
-    {"op":"add_shape","slide_index":0,"shape":"rectangle"|"oval"|"rounded_rectangle","x":80,"y":80,"width":200,"height":120}
+13) add_shape — shape; include "text" to label it
+    {"op":"add_shape","slide_index":0,"shape":"rounded_rectangle","text":"Label","x":80,"y":80,"width":200,"height":120}
 
-11) set_slide_skipped
+14) set_slide_skipped
     {"op":"set_slide_skipped","slide_index":0,"skipped":true}
 
-12) select_slide
+15) select_slide
     {"op":"select_slide","slide_index":0}
 
-13) create_presentation — new document (uses default theme if theme omitted)
+16) create_presentation
     {"op":"create_presentation","theme":"Gradient","width":1920,"height":1080}
 
-Example CHANGES response:
-{"actions":[{"op":"add_slide","position":"end","layout":"Title & Bullets"},{"op":"set_title","slide_index":-1,"text":"Roadmap"},{"op":"set_body","slide_index":-1,"text":"Q1 — Discovery\nQ2 — Build\nQ3 — Launch"}]}
+Example — seven dwarf boxes (CORRECT):
+{"actions":[{"op":"add_labeled_boxes","title":"Seven Dwarfs","shape":"rounded_rectangle","labels":["Doc","Grumpy","Happy","Sleepy","Bashful","Sneezy","Dopey"],"columns":4}]}
 
-Use slide_index -1 to mean the last slide after prior actions in the same response.
+Example — WRONG for boxes (do not do this when user asked for boxes):
+{"actions":[{"op":"add_content_slide","title":"Seven Dwarfs","body":"Doc\nGrumpy\nHappy\n..."}]}
+
+Example — meeting agenda (bullets OK):
+{"actions":[{"op":"add_content_slide","layout":"Agenda","title":"Agenda","body":"1. Welcome\n2. Updates\n3. Decisions","position":"end"}]}
+
+Never return only add_slide when the user asked for content. Never use only set_body when the user asked for separate boxes/cards.

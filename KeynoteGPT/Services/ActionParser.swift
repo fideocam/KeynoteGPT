@@ -2,6 +2,21 @@ import Foundation
 
 enum ActionParser {
     static func extractActions(from assistantText: String) -> [KeynoteAction] {
+        let raw = extractRawActions(from: assistantText)
+        return ActionAllowlist.sanitize(raw).kept
+    }
+
+    /// Like `extractActions`, but also returns what the allowlist rejected (for UI / tests).
+    static func extractActionsDetailed(from assistantText: String) -> (kept: [KeynoteAction], rejected: [String]) {
+        let raw = extractRawActions(from: assistantText)
+        return ActionAllowlist.sanitize(raw)
+    }
+
+    static func looksLikeAnalysis(_ text: String) -> Bool {
+        extractActions(from: text).isEmpty
+    }
+
+    private static func extractRawActions(from assistantText: String) -> [KeynoteAction] {
         let stripped = stripMarkdownFences(assistantText.trimmingCharacters(in: .whitespacesAndNewlines))
         if let batch = decodeBatch(stripped) {
             return batch.actions
@@ -29,36 +44,48 @@ enum ActionParser {
         return last
     }
 
-    static func looksLikeAnalysis(_ text: String) -> Bool {
-        extractActions(from: text).isEmpty
-    }
-
     private static func decodeBatch(_ text: String) -> ActionBatch? {
         guard let data = text.data(using: .utf8) else { return nil }
         return try? JSONDecoder().decode(ActionBatch.self, from: data)
     }
 
     private static func decodePartialObject(from text: String) -> ActionBatch? {
-        // Brace-matching extract of first complete object.
         var depth = 0
         var started = false
         var end = text.startIndex
+        var inString = false
+        var escaped = false
+
         for i in text.indices {
             let ch = text[i]
-            if ch == "{" {
+            if inString {
+                if escaped {
+                    escaped = false
+                } else if ch == "\\" {
+                    escaped = true
+                } else if ch == "\"" {
+                    inString = false
+                }
+                continue
+            }
+            switch ch {
+            case "\"":
+                inString = true
+            case "{":
                 depth += 1
                 started = true
-            } else if ch == "}" {
+            case "}":
                 depth -= 1
                 if started && depth == 0 {
                     end = text.index(after: i)
-                    break
+                    let slice = String(text[text.startIndex..<end])
+                    return decodeBatch(slice)
                 }
+            default:
+                break
             }
         }
-        guard started, depth == 0 else { return nil }
-        let slice = String(text[text.startIndex..<end])
-        return decodeBatch(slice)
+        return nil
     }
 
     private static func stripMarkdownFences(_ text: String) -> String {

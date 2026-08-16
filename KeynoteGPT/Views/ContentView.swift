@@ -21,10 +21,10 @@ struct ContentView: View {
             DigestSheet(text: digestText)
         }
         .sheet(isPresented: $showingSettings) {
-            SettingsView()
+            SettingsView(showsDismissButton: true)
                 .environmentObject(settings)
                 .environmentObject(agent)
-                .frame(width: 440, height: 360)
+                .frame(width: 480, height: 460)
         }
     }
 

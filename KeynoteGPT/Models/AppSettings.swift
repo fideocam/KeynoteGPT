@@ -7,4 +7,5 @@ final class AppSettings: ObservableObject {
     @AppStorage("ollamaModel") var ollamaModel: String = "llama3.2"
     @AppStorage("numCtx") var numCtx: Int = 0
     @AppStorage("showMenuBarExtra") var showMenuBarExtra: Bool = true
+    @AppStorage("showModelJSON") var showModelJSON: Bool = false
 }
