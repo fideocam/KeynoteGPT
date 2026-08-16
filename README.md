@@ -6,9 +6,9 @@ Keynote has no plugin SDK, so this app sits beside Keynote and drives it with Ja
 
 ## Download a prebuilt app (no Xcode needed)
 
-Grab the latest macOS build from **[Releases](https://github.com/fideocam/KeynoteGPT/releases)** (start with [v0.1](https://github.com/fideocam/KeynoteGPT/releases/tag/v0.1)):
+Grab the latest macOS build from **[Releases](https://github.com/fideocam/KeynoteGPT/releases)** ([v0.2](https://github.com/fideocam/KeynoteGPT/releases/tag/v0.2)):
 
-1. Download **KeynoteGPT-0.1-macOS.zip** and unzip it.
+1. Download **KeynoteGPT-0.2-macOS.zip** and unzip it.
 2. Open `KeynoteGPT.app`. Because the build is ad-hoc signed (not notarized), macOS may block it the first time — use **Right-click the app → Open → Open**.
 3. Start [Ollama](https://ollama.com) and pull a model if needed (`ollama pull llama3.2`).
 4. Open a Keynote document, then use KeynoteGPT.
@@ -87,4 +87,20 @@ Coverage focuses on LLM/tool abuse surfaces:
 
 - Operates on the **frontmost** Keynote document.
 - Slide indexes are **0-based**; `-1` means last slide after earlier actions in the same batch.
-- Some Keynote UI features (complex builds, every formatting knob) are outside the scripting dictionary — extend `KeynoteBridge` carefully, and avoid GUI scripting unless necessary.
+- Some Keynote UI features (complex builds, every formatting knob) are outside the scripting dictionary — see [`docs/KEYNOTE_SCRIPTING_GAPS.md`](docs/KEYNOTE_SCRIPTING_GAPS.md).
+- Shape **fill color** cannot be set via AppleScript (Apple limitation). Boxes are still real shape objects; fills may need Format → Style / Accessibility best-effort.
+
+## Related projects
+
+Closest GitHub neighbors (mostly **MCP servers** for Claude/Cursor, not standalone Ollama companions):
+
+| Project | Notes |
+|---------|--------|
+| [easychen/keynote-mcp](https://github.com/easychen/keynote-mcp) | Popular Keynote MCP via AppleScript |
+| [ByAxe/keynote-mcp](https://github.com/ByAxe/keynote-mcp) | Fork / continuation of keynote-mcp |
+| [superdwayne/keynoteMP](https://github.com/superdwayne/keynoteMP) | Broader Keynote MCP + design engine |
+| [reichenbach/iwork_mcp](https://github.com/reichenbach/iwork_mcp) | Numbers + Pages + Keynote MCP |
+| [PsychQuant/che-keynote-mcp](https://github.com/PsychQuant/che-keynote-mcp) | Swift-native Keynote MCP |
+| [sandeeffendi/keynote-companion-macos](https://github.com/sandeeffendi/keynote-companion-macos) | macOS Keynote companion (different stack) |
+
+KeynoteGPT is intentionally a **native SwiftUI + Ollama** companion (BlenderGPT-style), not an MCP server.

@@ -12,10 +12,11 @@ Indexes are 0-based unless noted.
 
 3) add_labeled_boxes — PREFERRED when the user wants separate boxes/cards/tiles per item
    {"op":"add_labeled_boxes","title":"Seven Dwarfs","shape":"rounded_rectangle","labels":["Doc","Grumpy","Happy","Sleepy","Bashful","Sneezy","Dopey"],"columns":4}
-   Creates a new slide (Title Only) when "title" is set, then places one labeled shape per label in a grid.
+   Creates a new slide (Title Only) when "title" is set, then places one real Keynote shape object per label in a grid (rounded rectangles by default — NOT a table).
    To add boxes to an existing slide: omit title and set "slide_index".
    shape: "rounded_rectangle" (default) | "rectangle" | "oval"
    Optional "columns" (1–8). If omitted, columns are chosen automatically.
+   Never substitute a table or bullet list when the user asked for boxes.
 
 4) add_labeled_shape — one rounded/rect/oval shape with text inside
    {"op":"add_labeled_shape","slide_index":-1,"shape":"rounded_rectangle","text":"Doc","x":100,"y":240,"width":240,"height":120}
@@ -56,11 +57,43 @@ Indexes are 0-based unless noted.
 16) create_presentation
     {"op":"create_presentation","theme":"Gradient","width":1920,"height":1080}
 
+17) set_opacity — shape/text_item/image (0–100)
+    {"op":"set_opacity","slide_index":-1,"element_type":"shape","item_index":0,"opacity":85}
+
+18) set_rotation — degrees 0–359
+    {"op":"set_rotation","slide_index":-1,"element_type":"shape","item_index":0,"rotation":15}
+
+19) set_text_style — font / size / color on title, body, shape, or text_item
+    {"op":"set_text_style","slide_index":-1,"element_type":"title","font":"Helvetica Neue","font_size":40,"color":[20,20,20]}
+    color is [r,g,b] 0–255. element_type: title|body|shape|text_item
+
+20) move_element / resize_element
+    {"op":"move_element","slide_index":-1,"element_type":"shape","item_index":0,"x":100,"y":200}
+    {"op":"resize_element","slide_index":-1,"element_type":"shape","item_index":0,"width":240,"height":120}
+
+21) delete_element
+    {"op":"delete_element","slide_index":-1,"element_type":"shape","item_index":0}
+
+22) add_image — absolute filepath required
+    {"op":"add_image","slide_index":-1,"filepath":"/Users/me/Pictures/logo.png","x":100,"y":100,"width":400,"height":300}
+
+23) add_color_table — ONLY when the user wants a colored table/grid (NOT shape boxes)
+    {"op":"add_color_table","title":"Teams","labels":["A","B","C","D"],"columns":4}
+
+24) set_transition
+    {"op":"set_transition","slide_index":-1,"transition":"dissolve"}
+
+25) export_presentation — format: pdf|png|powerpoint
+    {"op":"export_presentation","format":"pdf"}
+
+HARD LIMIT — Keynote cannot set shape fill RGB via scripting. Never claim you recolored a shape fill unless using add_color_table (table cells) or noting UI/theme style best-effort.
+
 Example — seven dwarf boxes (CORRECT):
 {"actions":[{"op":"add_labeled_boxes","title":"Seven Dwarfs","shape":"rounded_rectangle","labels":["Doc","Grumpy","Happy","Sleepy","Bashful","Sneezy","Dopey"],"columns":4}]}
 
 Example — WRONG for boxes (do not do this when user asked for boxes):
 {"actions":[{"op":"add_content_slide","title":"Seven Dwarfs","body":"Doc\nGrumpy\nHappy\n..."}]}
+{"actions":[{"op":"add_color_table","title":"Seven Dwarfs","labels":["Doc","Grumpy","Happy","Sleepy","Bashful","Sneezy","Dopey"]}]}
 
 Example — meeting agenda (bullets OK):
 {"actions":[{"op":"add_content_slide","layout":"Agenda","title":"Agenda","body":"1. Welcome\n2. Updates\n3. Decisions","position":"end"}]}

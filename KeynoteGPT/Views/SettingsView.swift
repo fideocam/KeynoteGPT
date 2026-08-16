@@ -51,7 +51,7 @@ struct SettingsView: View {
                 }
 
                 Section("Keynote") {
-                    Text("KeynoteGPT controls the frontmost Keynote document through JavaScript for Automation. Grant Automation access when macOS asks (KeynoteGPT → Keynote).")
+                    Text("KeynoteGPT controls the frontmost Keynote document through Automation. Grant Automation access when macOS asks (KeynoteGPT → Keynote). For multi-color shape boxes, also allow Accessibility so theme Shape Styles can be applied (System Settings → Privacy & Security → Accessibility).")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Button(isTestingKeynote ? "Testing…" : "Test Keynote digest") {

@@ -1,6 +1,7 @@
 .DS_Store
 build/
 DerivedData/
+.derivedData/
 *.xcuserstate
 xcuserdata/
 *.moved-aside
@@ -11,3 +12,5 @@ xcuserdata/
 .swiftpm/
 .idea/
 KeynoteGPT-0.1-macOS.zip
+KeynoteGPT-0.2-macOS.zip
+KeynoteGPT-*-macOS.zip

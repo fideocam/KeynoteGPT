@@ -22,11 +22,25 @@ struct KeynoteAction: Decodable, Sendable {
     let shape: String?
     let labels: [String]?
     let columns: Int?
+    let opacity: Int?
+    let rotation: Int?
+    let font: String?
+    let fontSize: Double?
+    let color: [Int]? // 0–255 RGB
+    let filepath: String?
+    let elementType: String? // shape | text_item | image | table
+    let transition: String?
+    let format: String? // pdf | png | powerpoint
+    let rows: Int?
 
     enum CodingKeys: String, CodingKey {
-        case op, text, title, body, position, layout, skipped, theme, width, height, x, y, shape, labels, columns
+        case op, text, title, body, position, layout, skipped, theme
+        case width, height, x, y, shape, labels, columns
+        case opacity, rotation, font, color, filepath, format, rows, transition
         case slideIndex = "slide_index"
         case itemIndex = "item_index"
+        case fontSize = "font_size"
+        case elementType = "element_type"
     }
 }
 

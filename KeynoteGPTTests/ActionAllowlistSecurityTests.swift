@@ -75,12 +75,35 @@ final class ActionAllowlistSecurityTests: XCTestCase {
     func testAllowlistMatchesDocumentedOps() {
         let expected: Set<String> = [
             "note", "add_slide", "add_content_slide", "add_labeled_shape", "add_labeled_boxes",
+            "add_color_table",
             "delete_slide", "duplicate_slide",
             "set_title", "set_body", "set_presenter_notes", "add_text_box",
             "set_text_item", "add_shape", "set_slide_skipped", "select_slide",
             "create_presentation",
+            "set_opacity", "set_rotation", "set_text_style",
+            "move_element", "resize_element", "delete_element",
+            "add_image", "set_transition", "export_presentation",
         ]
         XCTAssertEqual(ActionAllowlist.allowedOps, expected)
+    }
+
+    func testAddImageRequiresAbsolutePath() {
+        let relative = decode(#"{"op":"add_image","slide_index":0,"filepath":"logo.png"}"#)!
+        let (keptRel, rejectedRel) = ActionAllowlist.sanitize([relative])
+        XCTAssertTrue(keptRel.isEmpty)
+        XCTAssertTrue(rejectedRel[0].contains("filepath"))
+
+        let absolute = decode(#"{"op":"add_image","slide_index":0,"filepath":"/tmp/logo.png"}"#)!
+        let (keptAbs, rejectedAbs) = ActionAllowlist.sanitize([absolute])
+        XCTAssertEqual(keptAbs.count, 1)
+        XCTAssertTrue(rejectedAbs.isEmpty)
+    }
+
+    func testOpacityOutOfRangeRejected() {
+        let action = decode(#"{"op":"set_opacity","slide_index":0,"element_type":"shape","item_index":0,"opacity":150}"#)!
+        let (kept, rejected) = ActionAllowlist.sanitize([action])
+        XCTAssertTrue(kept.isEmpty)
+        XCTAssertTrue(rejected[0].contains("opacity"))
     }
 
     func testLabeledBoxesRequiresLabels() {
